@@ -1,13 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from ch_coworking.models import Reservation
+from ch_coworking.models import Reservation, Table
 
 from .serializers import SingleReservationSerializer, ManyReservationsSerializer, AddReservationSerializer
 
@@ -37,3 +37,12 @@ class CowhowIndexView(TemplateView):
      template_name = "ch_coworking/index.html"
 
 index = login_required(CowhowIndexView.as_view())
+
+
+class CowhowTablesView(ListView):
+  template_name = "admin/tables.html"
+
+  def get_queryset(self):
+      return Table.objects.filter(coworking__owner=self.request.user)
+
+tables = login_required(CowhowTablesView.as_view())
