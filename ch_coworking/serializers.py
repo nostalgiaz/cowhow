@@ -1,8 +1,9 @@
-from rest_framework import serializers
+from rest_framework import serializers, pagination
 from rest_framework import status
 from rest_framework.exceptions import APIException
 
 from .models import Reservation, Table
+from .paginators import ESPaginator
 
 
 class TimeOverlapException(APIException):
@@ -52,3 +53,24 @@ class AddReservationSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Reservation.objects.create(**validated_data)
+
+
+class ESLocationField(serializers.ReadOnlyField):
+    def to_representation(self, obj):
+        return {
+            'latitude': obj['lat'],
+            'longitude': obj['lon'],
+        }
+
+
+class ESCoworkingSerializer(serializers.Serializer):
+    location = ESLocationField()
+    name = serializers.ReadOnlyField()
+
+
+class PagedCoworkingSerializer(pagination.PageNumberPagination):
+    def __init__(self, result, request, n):
+        paginator = ESPaginator(result, n)
+
+        self.request = request
+        self.page = paginator.page(request.GET.get('page', 1))

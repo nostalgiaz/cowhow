@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -7,9 +8,29 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
 
+from elasticsearch_dsl import Search, Q
+
 from ch_coworking.models import Reservation
 
-from .serializers import SingleReservationSerializer, ManyReservationsSerializer, AddReservationSerializer
+from .helpers import ChHelpers
+from .serializers import (
+    SingleReservationSerializer, ManyReservationsSerializer, AddReservationSerializer,
+    PagedCoworkingSerializer, ESCoworkingSerializer
+)
+
+
+class CoworkingsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        client = ChHelpers.get_es()
+
+        s = Search(using=client, index=settings.ELASTICSEARCH['index'])
+
+        serializer = PagedCoworkingSerializer(s, request, 100)
+        data = ESCoworkingSerializer(data=serializer.page, many=True)
+
+        data.is_valid()
+
+        return serializer.get_paginated_response(data.data)
 
 
 class ReservationViewSet(viewsets.ViewSet):
@@ -34,6 +55,6 @@ class ReservationViewSet(viewsets.ViewSet):
 
 
 class CowhowIndexView(TemplateView):
-     template_name = "ch_coworking/index.html"
+    template_name = "ch_coworking/index.html"
 
 index = login_required(CowhowIndexView.as_view())
