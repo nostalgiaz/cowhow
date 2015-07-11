@@ -22,7 +22,7 @@ class Coworking(TimeStampedModel):
 class Table(TimeStampedModel):
     name = models.CharField(max_length=255)
     active = models.BooleanField(default=True)
-    coworking = models.ForeignKey(Coworking)
+    coworking = models.ForeignKey(Coworking, related_name='tables')
     price = models.DecimalField(decimal_places=2, max_digits=5)
     notes = models.TextField()
     def __unicode__(self):
