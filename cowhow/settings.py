@@ -128,3 +128,11 @@ ELASTICSEARCH = {
     'verify_certs': False,
     'use_sniff': False,
 }
+
+
+# Hey this is an hackathon, we will store these config inside env variables.
+
+BRAINTREE_SANDBOX = True
+BRAINTREE_MERCHANT_ID = '428z5nyhfgrd4cjk'
+BRAINTREE_PUBLIC_KEY = 's393rs6dhpq446y2'
+BRAINTREE_PRIVATE_KEY = '61da2cd47a4ba3a6812624bd25f7b2de'
