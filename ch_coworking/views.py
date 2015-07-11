@@ -1,5 +1,7 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.views.generic import TemplateView
 
 from rest_framework import status
 from rest_framework import viewsets
@@ -29,3 +31,9 @@ class ReservationViewSet(viewsets.ViewSet):
         reservation = get_object_or_404(Reservation, pk=pk)
         serializer = SingleReservationSerializer(reservation)
         return Response(serializer.data)
+
+
+class CowhowIndexView(TemplateView):
+     template_name = "ch_coworking/index.html"
+
+index = login_required(CowhowIndexView.as_view())

@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>AdminLTE 2 | Dashboard</title>
+    <title>cowhow</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.4 -->
@@ -29,6 +29,13 @@
     <link href="{% static "admin/plugins/daterangepicker/daterangepicker-bs3.css" %}" rel="stylesheet" type="text/css" />
     <!-- bootstrap wysihtml5 - text editor -->
     <link href="{% static "admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" %}" rel="stylesheet" type="text/css" />
+
+
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />
+    <style>
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -455,6 +462,7 @@
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
+        {% block content_wrapper %}
         <section class="content-header">
           <h1>
             Dashboard
@@ -468,6 +476,7 @@
 
         <!-- Main content -->
         <section class="content">{% block content %}{% endblock %}</section><!-- /.content -->
+        {% endblock %}
       </div><!-- /.content-wrapper -->
       <footer class="main-footer">
         <div class="pull-right hidden-xs">
@@ -680,5 +689,6 @@
     <script src="{% static "admin/dist/js/pages/dashboard.js" %}" type="text/javascript"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{% static "admin/dist/js/demo.js" %}" type="text/javascript"></script>
+    {% block extra_script %}{% endblock %}
   </body>
 </html>

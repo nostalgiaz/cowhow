@@ -36,6 +36,7 @@ INSTALLED_APPS = (
 
     'flat',
     'rest_framework',
+    'settings_context_processor',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -127,3 +128,20 @@ ELASTICSEARCH = {
     'verify_certs': False,
     'use_sniff': False,
 }
+
+TEMPLATE_CONTEXT_PROCESSORS = [
+    'settings_context_processor.context_processors.settings',
+]
+
+TEMPLATE_VISIBLE_SETTINGS = [
+    'MAPBOX_KEY'
+]
+
+
+MAPBOX_KEY = ''
+
+
+try:
+    from local_settings import *
+except ImportError:
+    pass

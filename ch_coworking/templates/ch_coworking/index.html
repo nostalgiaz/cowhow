@@ -1,0 +1,14 @@
+{% extends "admin/home.html" %}
+{% block content_wrapper %}
+    <div class="row">
+        <div class="col-md-6">aaa</div>
+        <div class="col-md-6">bbb<div id='map'></div></div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+        L.mapbox.accessToken = '{{ MAPBOX_KEY }}';
+        var map = L.mapbox.map('map', 'mapbox.streets').setView([40, -74.50], 9);
+    </script>
+{% endblock %}
