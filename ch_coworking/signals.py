@@ -1,13 +1,15 @@
 from django.conf import settings
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from ch_coworking.helpers import ChHelpers
 from ch_coworking.models import Coworking
 
 
+@receiver(m2m_changed, sender=Coworking.amenities.through,
+          dispatch_uid='ch_coworking.signals.coworking_m2m_save')
 @receiver(post_save, sender=Coworking,
           dispatch_uid='ch_coworking.signals.coworking_post_save')
-def coworking_post_save(sender, instance, created, **kwargs):
+def coworking_post_save(sender, instance, **kwargs):
     client = ChHelpers.get_es()
     try:
         client.delete(
@@ -27,6 +29,7 @@ def coworking_post_save(sender, instance, created, **kwargs):
             'location': {
                 'lat': instance.lat,
                 'lon': instance.lng
-            }
+            },
+            'amenities': [a.name for a in instance.amenities.all()],
         }
     )

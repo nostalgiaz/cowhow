@@ -4,6 +4,10 @@ from django.db import models
 from model_utils.models import TimeStampedModel
 
 
+class Amenity(models.Model):
+    name = models.CharField(max_length=255)
+
+
 class Coworking(TimeStampedModel):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL)
     name = models.CharField(max_length=255)
@@ -11,6 +15,8 @@ class Coworking(TimeStampedModel):
     lng = models.FloatField()
     opening = models.TimeField()
     closing = models.TimeField()
+
+    amenities = models.ManyToManyField(Amenity, blank=True)
 
 
 class Table(TimeStampedModel):
