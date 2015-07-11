@@ -22,3 +22,10 @@ allprojects {
         jcenter()
     }
 }
+
+
+subprojects {
+    repositories {
+        maven { url 'http://clojars.org/repo' }
+    }
+}

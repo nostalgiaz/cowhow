@@ -38,9 +38,9 @@ public class PusherTest extends AppCompatActivity {
         p.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange connectionStateChange) {
-                new AlertDialog.Builder(PusherTest.this)
-                        .setMessage("RECEIVED")
-                        .create().show();
+//                new AlertDialog.Builder(PusherTest.this)
+//                        .setMessage("RECEIVED")
+//                        .create().show();
             }
 
             @Override
