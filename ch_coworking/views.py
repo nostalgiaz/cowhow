@@ -1,24 +1,13 @@
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
+from rest_framework import status
 from rest_framework import viewsets
-from rest_framework import serializers
 from rest_framework.response import Response
 
 from ch_coworking.models import Reservation
 
-
-class SingleReservationSerializer(serializers.ModelSerializer):
-    lng = serializers.FloatField(source='table.coworking.lng')
-    lat = serializers.FloatField(source='table.coworking.lat')
-
-    class Meta:
-        model = Reservation
-        fields = ['pk', 'date', 'from_hour', 'to_hour', 'lat', 'lng']
-
-
-class ManyReservationsSerializer(SingleReservationSerializer):
-    pass
+from .serializers import SingleReservationSerializer, ManyReservationsSerializer, AddReservationSerializer
 
 
 class ReservationViewSet(viewsets.ViewSet):
@@ -27,6 +16,14 @@ class ReservationViewSet(viewsets.ViewSet):
             owner=self.request.user, date__gte=timezone.now().date())
         serializer = ManyReservationsSerializer(reservations, many=True)
         return Response(serializer.data)
+
+    def create(self, request):
+        serializer = AddReservationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save(owner=request.user)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk=None):
         reservation = get_object_or_404(Reservation, pk=pk)
