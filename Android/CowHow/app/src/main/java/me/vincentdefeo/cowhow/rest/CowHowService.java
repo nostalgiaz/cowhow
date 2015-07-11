@@ -10,6 +10,6 @@ import retrofit.http.Path;
  */
 
 public interface CowHowService {
-    @GET("/reservations")
+    @GET("/api/reservations")
     List<Reservation> getReservations();
 }

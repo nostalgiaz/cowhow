@@ -24,12 +24,34 @@ class CoworkingsViewSet(viewsets.ViewSet):
     def list(self, request):
         client = ChHelpers.get_es()
 
-        s = Search(using=client, index=settings.ELASTICSEARCH['index'])
+        s = Search(
+            using=client,
+            index=settings.ELASTICSEARCH['index'],
+            doc_type=settings.ELASTICSEARCH['doc_type']
+        )
 
         amenities = request.GET.getlist('amenities')
 
         if len(amenities) > 0:
             s = s.filter('terms', amenities=amenities)
+
+        top_left = request.GET.get('top_left', False)
+        bottom_right = request.GET.get('bottom_right', False)
+
+        if top_left and bottom_right:
+            a, b = top_left.split(',')
+            c, d = bottom_right.split(',')
+
+            s = s.filter('geo_bounding_box', location={
+                'top_left': {
+                    'lat': a,
+                    'lon': b
+                },
+                'bottom_right': {
+                    'lat': c,
+                    'lon': d
+                }
+            })
 
         serializer = PagedCoworkingSerializer(s, request, 100)
         data = ESCoworkingSerializer(data=serializer.page, many=True)
