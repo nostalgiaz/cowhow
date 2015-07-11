@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from elasticsearch_dsl import Search
 
-from ch_coworking.models import Reservation, Table
+from ch_coworking.models import Reservation, Table, Coworking
 
 from .helpers import ChHelpers
 from .serializers import (
@@ -93,6 +93,12 @@ class CowhowTablesView(ListView):
 
   def get_queryset(self):
       return Table.objects.filter(coworking__owner=self.request.user)
+
+  def get_context_data(self, **kwargs):
+      context = super(CowhowTablesView, self).get_context_data(**kwargs)
+      context['coworking'] = Coworking.objects.filter(owner=self.request.user)[0]
+      context['tables_active'] = context['coworking'].tables.filter(active=True).count()
+      return context
 
 tables = login_required(CowhowTablesView.as_view())
 

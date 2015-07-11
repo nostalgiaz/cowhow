@@ -6,7 +6,7 @@
 	<div class="col-xs-12">
 		<div class="box">
 			<div class="box-header">
-				<h3 class="box-title">Responsive Hover Table</h3>
+				<h3 class="box-title">Your desks</h3>
 				<div class="box-tools">
 					<div class="input-group" style="width: 150px;">
 						<input type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search" />
@@ -50,6 +50,7 @@ $('.table-price').click(function(e){
   var td=this;
   if (!$(td).hasClass('editing')) {
     $(td).addClass('editing').find('span').html('<input value="'+$(td).find('span').text()+'" size="5" />');
+    $(td).find('input').select();
     $(td).find('input').keypress(function(e) {
       if(e.which == 13) {
         $.ajax('/tables/'+$(td).parents('tr').attr("rel")+'/price?val='+$(td).find('input').val(),{
@@ -68,8 +69,18 @@ $('.table-active').change(function(e){
     'success': function(){
       if (radio.checked) {
         $(radio.parentNode).siblings('.status').find('span.label').removeClass('label-danger').addClass('label-success').html('available');
+        if ($('#tables_active').length==0) {
+          $('#tables_link').append('<small id="tables_active" class="label pull-right bg-red">1</small>');
+        } else {
+          $('#tables_active').html(parseInt($('#tables_active').text()) + 1);
+        }
       } else {
         $(radio.parentNode).siblings('.status').find('span.label').removeClass('label-success').addClass('label-danger').html('unavailable');
+        if (parseInt($('#tables_active').text())==1) {
+          $('#tables_active').remove()
+        } else {
+          $('#tables_active').html(parseInt($('#tables_active').text()) - 1);
+        }
       }
     }
   }
