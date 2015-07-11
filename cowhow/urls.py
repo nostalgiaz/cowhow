@@ -16,9 +16,12 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import TemplateView
+from django.views.generic import ListView
+
+from ch_coworking.models import Table
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'', include('ch_coworking.urls')),
-    url(r'^home/', TemplateView.as_view(template_name="admin/home.html")),
+    url(r'^home/', ListView.as_view(template_name="admin/tables.html",model=Table)),
 ]
