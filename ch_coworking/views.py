@@ -21,6 +21,8 @@ class ReservationViewSet(viewsets.ViewSet):
         serializer = AddReservationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        serializer.save(owner=request.user)
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk=None):

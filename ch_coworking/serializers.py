@@ -49,3 +49,6 @@ class AddReservationSerializer(serializers.Serializer):
             raise TimeOverlapException('Time overlaps!')
 
         return data
+
+    def create(self, validated_data):
+        return Reservation.objects.create(**validated_data)
