@@ -6,3 +6,4 @@ elasticsearch-dsl==0.0.4
 pytest==2.7.2
 pytest-django==2.8.0
 factory-boy==2.5.2
+braintree==3.16.0
