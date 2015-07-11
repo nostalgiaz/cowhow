@@ -26,14 +26,14 @@
 					<th width="10%">Price</th>
 				</tr>
 				{% for table in object_list %}
-				<tr>
+				<tr rel="{{table.pk}}">
 					<td>
-					<input type="checkbox" {% if table.active %} checked="true"{% endif %} rel="{{table.pk}}" class="table-active" />
+					<input type="checkbox" {% if table.active %} checked="true"{% endif %} class="table-active" />
 					</td>
 					<td class="status"><span class="label label-{% if table.active %}success">available{% else %}danger">unavailable{% endif %}</span></td>
 					<td>{{table.name}}</td>
 					<td>{{table.notes}}</td>
-					<td>{{table.price}}</td>
+					<td class="table-price"><span>{{table.price}}</span> €</td>
 				</tr>
 				{% endfor %}
 				</table>
@@ -46,9 +46,25 @@
 
 {% block extra_script %}
 <script type="text/javascript">
+$('.table-price').click(function(e){
+  var td=this;
+  if (!$(td).hasClass('editing')) {
+    $(td).addClass('editing').find('span').html('<input value="'+$(td).find('span').text()+'" size="5" />');
+    $(td).find('input').keypress(function(e) {
+      if(e.which == 13) {
+        $.ajax('/tables/'+$(td).parents('tr').attr("rel")+'/price?val='+$(td).find('input').val(),{
+          'success': function(data){
+            console.log(data);
+            $(td).removeClass('editing').find('span').html(parseFloat(data).toFixed(2));
+          }
+        });
+      }
+    });
+  }
+});
 $('.table-active').change(function(e){
   var radio=this;
-  $.ajax('/tables/'+$(radio).attr("rel")+'/'+(radio.checked?'':'de')+'activate',{
+  $.ajax('/tables/'+$(radio).parents('tr').attr("rel")+'/'+(radio.checked?'':'de')+'activate',{
     'success': function(){
       if (radio.checked) {
         $(radio.parentNode).siblings('.status').find('span.label').removeClass('label-danger').addClass('label-success').html('available');

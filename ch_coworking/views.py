@@ -107,3 +107,10 @@ def table_deactivate(request, table_id):
   table.active=False
   table.save()
   return HttpResponse(str(table.active).lower())
+
+def table_price(request, table_id):
+  table = get_object_or_404(Table,pk=table_id)
+  if 'val' in request.GET:
+    table.price=request.GET['val']
+    table.save()
+  return HttpResponse(table.price)
