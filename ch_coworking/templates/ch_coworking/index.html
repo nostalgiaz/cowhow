@@ -1,14 +1,46 @@
-{% extends "admin/home.html" %}
+{% extends "admin/site_base.html" %}
+{% load staticfiles %}
+
+{% block extra_style %}
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            background-color: #f1f1f1;
+        }
+        #map {
+            height: calc(100vh - 50px);
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+{% endblock %}
+
 {% block content_wrapper %}
-    <div class="row">
-        <div class="col-md-6">aaa</div>
-        <div class="col-md-6">bbb<div id='map'></div></div>
-    </div>
+    <div id="react"></div>
 {% endblock %}
 
 {% block extra_script %}
-    <script>
-        L.mapbox.accessToken = '{{ MAPBOX_KEY }}';
-        var map = L.mapbox.map('map', 'mapbox.streets').setView([40, -74.50], 9);
+    <script src="{% static "deps/js/underscore.js" %}" type="text/javascript"></script>
+    <script src="{% static "deps/js/JSXTransformer.js" %}" type="text/javascript"></script>
+    <script src="{% static "deps/js/react.js" %}" type="text/javascript"></script>
+    <script src="{% static "deps/js/reflux.min.js" %}" type="text/javascript"></script>
+
+    <script src="{% static "react/action.js" %}" type="text/jsx"></script>
+    <script src="{% static "react/store.js" %}" type="text/jsx"></script>
+
+    <script src="{% static "react/coworking.js" %}" type="text/jsx"></script>
+    <script src="{% static "react/coworkings.js" %}" type="text/jsx"></script>
+
+    <script src="{% static "react/checkbox.js" %}" type="text/jsx"></script>
+    <script src="{% static "react/checkboxes.js" %}" type="text/jsx"></script>
+    <script src="{% static "react/map.js" %}" type="text/jsx"></script>
+
+    <script src="{% static "react/main.js" %}" type="text/jsx"></script>
+
+    <script type="text/jsx">
+        React.render(<Main
+            accessToken="pk.eyJ1IjoicGF0cmljazkxIiwiYSI6ImRlY2ZmNmZmZDRkNTNhMGI4MzVmNWIyNDE5OGFkODZlIn0.pXXQ6sruitJC9VXLfWFSyA"/>, document.getElementById('react'));
     </script>
 {% endblock %}
