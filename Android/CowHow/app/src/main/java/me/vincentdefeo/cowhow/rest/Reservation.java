@@ -1,17 +1,25 @@
 package me.vincentdefeo.cowhow.rest;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
 
 /**
  * Created by ghzmdr on 11/07/15.
  */
-public class Reservation {
+public class Reservation implements Serializable {
     @Expose
     public String date;
-    @Expose
+
+    @SerializedName("from_hour")
     public String fromHour;
-    @Expose
-    public String toHout;
+
+    @SerializedName("to_hour")
+    public String toHour;
     @Expose
     public String pk;
     @Expose

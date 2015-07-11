@@ -7,9 +7,9 @@ import android.os.AsyncTask;
  */
 public abstract class SimpleAsync extends AsyncTask<Void, Void, Void> {
 
-    void prepare(){};
+    protected void prepare(){}
     protected abstract void run();
-    void then(){};
+    protected abstract void then();
 
 
     @Override

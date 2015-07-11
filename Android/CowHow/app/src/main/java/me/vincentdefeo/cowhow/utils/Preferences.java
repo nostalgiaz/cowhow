@@ -2,6 +2,7 @@ package me.vincentdefeo.cowhow.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Base64;
 
 /**
  * Created by ghzmdr on 11/07/15.
@@ -37,7 +38,8 @@ public class Preferences {
 
     public static String getUserAuth(Context c)
     {
-        return getString(c, PREFS_AUTH_FILE, PREFS_AUTH_USER) + ":" +  getString(c, PREFS_AUTH_FILE, PREFS_AUTH_PWD);
+        String auth = getString(c, PREFS_AUTH_FILE, PREFS_AUTH_USER) + ":" +  getString(c, PREFS_AUTH_FILE, PREFS_AUTH_PWD);
+        return auth.equals(":") ? null : "Basic " + Base64.encodeToString(auth.getBytes(), Base64.NO_WRAP);
     }
 
     public static String getUserName(Context c)

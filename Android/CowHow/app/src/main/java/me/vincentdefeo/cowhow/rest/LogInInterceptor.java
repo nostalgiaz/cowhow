@@ -2,6 +2,7 @@ package me.vincentdefeo.cowhow.rest;
 
 import android.content.Context;
 import android.util.Base64;
+import android.util.Log;
 
 import me.vincentdefeo.cowhow.utils.Preferences;
 import retrofit.RequestInterceptor;
@@ -22,8 +23,10 @@ public class LogInInterceptor implements RequestInterceptor {
     public void intercept(RequestFacade request) {
         final String authVal = Preferences.getUserAuth(context);
 
-        if (authVal != "" && authVal != null) {
+        if (authVal != null && !authVal.equals("") && !authVal.equals(":")) {
             request.addHeader("Authorization", authVal);
         }
+
+        Log.d("LOGIN INTERCEPTOR", "Authorization: " + authVal);
     }
 }

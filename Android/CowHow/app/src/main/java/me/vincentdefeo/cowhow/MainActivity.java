@@ -1,10 +1,12 @@
 package me.vincentdefeo.cowhow;
 
-import android.location.Geocoder;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,13 +14,14 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import java.io.IOException;
+import com.pusher.client.Pusher;
+
 import java.util.List;
 
 import me.vincentdefeo.cowhow.async.SimpleAsync;
 import me.vincentdefeo.cowhow.rest.CowHowService;
 import me.vincentdefeo.cowhow.rest.Reservation;
-import me.vincentdefeo.cowhow.utils.Preferences;
+import me.vincentdefeo.cowhow.utils.Maps;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -39,12 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
         //fragmentContainer = (FrameLayout) findViewById(R.id.fragment_container);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
         list = (RecyclerView) findViewById(R.id.reservations_list);
-
-
+        list.setLayoutManager(new LinearLayoutManager(this));
 
         new SimpleAsync()
         {
@@ -54,14 +56,23 @@ public class MainActivity extends AppCompatActivity {
             protected void run()
             {
                 CowHowService chs = ((CowHowApplication) getApplication()).getRestService();
-                reservations = chs.getReservations();//Preferences.getUserName(getBaseContext()));
+                reservations = chs.getReservations();
             }
 
+            @Override
             protected void then()
             {
                 list.setAdapter(new ReservationsAdapter(reservations));
             }
+
         }.execute();
+
+        findViewById(R.id.puser_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, PusherTest.class));
+            }
+        });
     }
 
     @Override
@@ -106,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
 
     private class ReservationsAdapter extends RecyclerView.Adapter<ReservationViewHolder>
     {
-
         private final List<Reservation> reservations;
 
         ReservationsAdapter(List<Reservation> reservations)
@@ -115,9 +125,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public ReservationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = new View(getBaseContext());
-            v.inflate(getBaseContext(), R.layout.reservation_list_item, null);
+        public ReservationViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            View v = LayoutInflater.from(MainActivity.this)
+                        .inflate(R.layout.reservation_list_item, parent, false);
 
             return new ReservationViewHolder(v);
         }
@@ -125,25 +136,32 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ReservationViewHolder holder, int position)
         {
-            Reservation current = reservations.get(position);
+            final Reservation current = reservations.get(position);
 
-            String address = null;
-            Geocoder g = new Geocoder(getBaseContext());
 
-            try {
-                address = g.getFromLocation(current.lat, current.lng, 1).get(0).getAddressLine(0);
-            } catch (IOException e) {
-                e.printStackTrace();
-                address = current.lat + " " + current.lng;
-            }
 
             holder.date.setText(current.date);
+            holder.date.setText(current.date);
             holder.hour.setText(current.fromHour);
-            holder.position.setText(address);
+            holder.position.setText(Maps.getAddressFromCoords(MainActivity.this, current.lat, current.lng));
+
+            holder.root.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(MainActivity.this, DetailActivity.class);
+
+                    Bundle b = new Bundle();
+                    b.putSerializable(DetailActivity.EXTRA, current);
+                    i.putExtras(b);
+
+                    startActivity(i);
+                }
+            });
         }
 
         @Override
-        public int getItemCount() {
+        public int getItemCount()
+        {
             return reservations.size();
         }
     }
