@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from elasticsearch_dsl import Search, Q
+from elasticsearch_dsl import Search
 
 from ch_coworking.models import Reservation
 
@@ -24,6 +24,11 @@ class CoworkingsViewSet(viewsets.ViewSet):
         client = ChHelpers.get_es()
 
         s = Search(using=client, index=settings.ELASTICSEARCH['index'])
+
+        amenities = request.GET.getlist('amenities')
+
+        if len(amenities) > 0:
+            s = s.filter('terms', amenities=amenities)
 
         serializer = PagedCoworkingSerializer(s, request, 100)
         data = ESCoworkingSerializer(data=serializer.page, many=True)
