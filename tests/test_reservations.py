@@ -14,7 +14,7 @@ class TestApiReservationCreation(APITestCase):
         url = reverse('reservation-list')
         response = self.client.post(url, {}, format='json')
 
-        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_fails_if_table_is_not_available(self):
         user = factories.UserFactory()
