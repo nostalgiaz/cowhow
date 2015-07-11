@@ -4,7 +4,9 @@ from datetime import time
 import factory
 import factory.fuzzy
 
-from ch_coworking.models import Coworking, Table
+from django.utils import timezone
+
+from ch_coworking.models import Coworking, Table, Reservation
 from ch_users.models import User
 
 
@@ -33,3 +35,15 @@ class TableFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Table
+
+
+class ReservationFactory(factory.django.DjangoModelFactory):
+    table = factory.SubFactory(TableFactory)
+    owner = factory.SubFactory(UserFactory)
+    from_hour = factory.LazyAttribute(lambda obj: time(random.randint(6, 10), 0))
+    to_hour = factory.LazyAttribute(lambda obj: time(random.randint(18, 22), 0))
+
+    date = factory.LazyAttribute(lambda obj: timezone.now().date())
+
+    class Meta:
+        model = Reservation

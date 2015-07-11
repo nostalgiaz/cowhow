@@ -1,4 +1,7 @@
+from datetime import time
+
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -8,10 +11,56 @@ from . import factories
 
 class TestApiReservationCreation(APITestCase):
     def test_fails_if_not_logged(self):
-        url = reverse('reservations-list')
+        url = reverse('reservation-list')
         response = self.client.post(url, {}, format='json')
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_fails_if_table_is_not_available(self):
+        user = factories.UserFactory()
+        table = factories.TableFactory()
+
+        factories.ReservationFactory(
+            table=table,
+            date=timezone.now().date(),
+            from_hour=time(10, 00),
+            to_hour=time(20, 00),
+        )
+
+        self.client.force_authenticate(user=user)
+
+        url = reverse('reservation-list')
+        response = self.client.post(url, {
+            'table': table.pk,
+            'date': timezone.now().date(),
+            'from_hour': '10:00',
+            'to_hour': '15:00',
+        }, format='json')
+
+        assert response.status_code == status.HTTP_409_CONFLICT
+
+    def test_fails_does_not_fail_on_same_day(self):
+        user = factories.UserFactory()
+        table = factories.TableFactory()
+
+        factories.ReservationFactory(
+            table=table,
+            date=timezone.now().date(),
+            from_hour=time(10, 00),
+            to_hour=time(12, 00),
+        )
+
+        self.client.force_authenticate(user=user)
+
+        url = reverse('reservation-list')
+        response = self.client.post(url, {
+            'table': table.pk,
+            'date': timezone.now().date(),
+            'from_hour': '13:00',
+            'to_hour': '15:00',
+        }, format='json')
+
+        assert response.status_code == status.HTTP_201_CREATED
 
     def test_add(self):
         user = factories.UserFactory()
@@ -19,9 +68,12 @@ class TestApiReservationCreation(APITestCase):
 
         self.client.force_authenticate(user=user)
 
-        url = reverse('reservations-list')
+        url = reverse('reservation-list')
         response = self.client.post(url, {
-            'table': table.pk
+            'table': table.pk,
+            'date': timezone.now().date(),
+            'from_hour': '10:00',
+            'to_hour': '15:00',
         }, format='json')
 
         assert response.status_code == status.HTTP_201_CREATED
