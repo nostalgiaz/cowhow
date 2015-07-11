@@ -28,6 +28,9 @@ class ReservationViewSet(viewsets.ViewSet):
         serializer = ManyReservationsSerializer(reservations, many=True)
         return Response(serializer.data)
 
+    def create(self, request):
+        pass
+
     def retrieve(self, request, pk=None):
         reservation = get_object_or_404(Reservation, pk=pk)
         serializer = SingleReservationSerializer(reservation)
