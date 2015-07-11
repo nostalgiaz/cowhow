@@ -2,10 +2,11 @@ from django.contrib.auth import get_user_model
 from django.views.generic import DetailView
 
 from rest_framework import generics
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from .serializers import UserSerializer, CreditCardSerializer
+from .serializers import UserSerializer, CreditCardSerializer, AddCreditCardSerializer
 
 
 class UserProfile(DetailView):
@@ -28,3 +29,15 @@ class MeCreditCardsViewSet(viewsets.ViewSet):
         serializer = CreditCardSerializer(credit_cards, many=True)
 
         return Response(serializer.data)
+
+    def create(self, request):
+        user = request.user
+
+        serializer = AddCreditCardSerializer(data=request.DATA)
+
+        serializer.is_valid(raise_exception=True)
+        result = serializer.save(user=user)
+
+        serializer = CreditCardSerializer(result)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
