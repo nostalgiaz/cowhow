@@ -15,10 +15,13 @@ class TestApiReservationCreation(APITestCase):
 
     def test_add(self):
         user = factories.UserFactory()
+        table = factories.TableFactory()
 
         self.client.force_authenticate(user=user)
 
         url = reverse('reservations-list')
-        response = self.client.post(url, {}, format='json')
+        response = self.client.post(url, {
+            'table': table.pk
+        }, format='json')
 
-        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert response.status_code == status.HTTP_201_CREATED

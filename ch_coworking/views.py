@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
 
@@ -17,7 +18,10 @@ class ReservationViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        pass
+        serializer = AddReservationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk=None):
         reservation = get_object_or_404(Reservation, pk=pk)
