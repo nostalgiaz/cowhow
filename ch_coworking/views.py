@@ -30,7 +30,7 @@ class CoworkingsViewSet(viewsets.ViewSet):
             doc_type=settings.ELASTICSEARCH['doc_type']
         )
 
-        amenities = request.GET.getlist('amenities')
+        amenities = request.GET.getlist('amenities[]')
 
         if len(amenities) > 0:
             s = s.filter('terms', amenities=amenities)

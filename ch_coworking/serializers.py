@@ -13,10 +13,12 @@ class TimeOverlapException(APIException):
 class SingleReservationSerializer(serializers.ModelSerializer):
     lng = serializers.FloatField(source='table.coworking.lng')
     lat = serializers.FloatField(source='table.coworking.lat')
+    host_name = serializers.CharField(source='table.coworking.name')
 
     class Meta:
         model = Reservation
-        fields = ['pk', 'date', 'from_hour', 'to_hour', 'lat', 'lng']
+        fields = [
+            'pk', 'date', 'from_hour', 'to_hour', 'lat', 'lng', 'host_name']
 
 
 class ManyReservationsSerializer(SingleReservationSerializer):
