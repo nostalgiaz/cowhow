@@ -18,15 +18,18 @@ def coworking_post_save(sender, instance, created, **kwargs):
     except:
         pass
 
-    client.index(
-        index=settings.ELASTICSEARCH['index'],
-        doc_type=settings.ELASTICSEARCH['doc_type'],
-        id=instance.pk,
-        body={
-            'name': instance.name,
-            'location': {
-                'lat': instance.lat,
-                'lon': instance.lng
-            }
-        }
-    )
+    try:
+      client.index(
+          index=settings.ELASTICSEARCH['index'],
+          doc_type=settings.ELASTICSEARCH['doc_type'],
+          id=instance.pk,
+          body={
+              'name': instance.name,
+              'location': {
+                  'lat': instance.lat,
+                  'lon': instance.lng
+              }
+          }
+      )
+    except:
+        pass

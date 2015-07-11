@@ -19,21 +19,21 @@
 			<div class="box-body table-responsive no-padding">
 				<table class="table table-hover">
 				<tr>
-					<th>Active</th>
-					<th>User</th>
-					<th>Date</th>
-					<th>Status</th>
-					<th>Reason</th>
+					<th width="10%">Active</th>
+					<th width="10%">Status</th>
+					<th width="30%">Name</th>
+					<th width="40%">Notes</th>
+					<th width="10%">Price</th>
 				</tr>
 				{% for table in object_list %}
 				<tr>
 					<td>
-					<div class="icheckbox_flat-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins></div>
+					<input type="checkbox" {% if table.active %} checked="true"{% endif %} rel="{{table.pk}}" class="table-active" />
 					</td>
+					<td class="status"><span class="label label-{% if table.active %}success">available{% else %}danger">unavailable{% endif %}</span></td>
 					<td>{{table.name}}</td>
-					<td>11-7-2014</td>
-					<td><span class="label label-success">Approved</span></td>
-					<td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+					<td>{{table.notes}}</td>
+					<td>{{table.price}}</td>
 				</tr>
 				{% endfor %}
 				</table>
@@ -41,4 +41,23 @@
 		</div><!-- /.box -->
 	</div>
 </div><!-- /.row (main row) -->
+{% endblock %}
+
+
+{% block extra_script %}
+<script type="text/javascript">
+$('.table-active').change(function(e){
+  var radio=this;
+  $.ajax('/tables/'+$(radio).attr("rel")+'/'+(radio.checked?'':'de')+'activate',{
+    'success': function(){
+      if (radio.checked) {
+        $(radio.parentNode).siblings('.status').find('span.label').removeClass('label-danger').addClass('label-success').html('available');
+      } else {
+        $(radio.parentNode).siblings('.status').find('span.label').removeClass('label-success').addClass('label-danger').html('unavailable');
+      }
+    }
+  }
+  );
+});
+</script>
 {% endblock %}

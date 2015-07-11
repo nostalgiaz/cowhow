@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import TemplateView, ListView
+from django.http import HttpResponse
 
 from rest_framework import status
 from rest_framework import viewsets
@@ -46,3 +47,15 @@ class CowhowTablesView(ListView):
       return Table.objects.filter(coworking__owner=self.request.user)
 
 tables = login_required(CowhowTablesView.as_view())
+
+def table_activate(request, table_id):
+  table = get_object_or_404(Table,pk=table_id)
+  table.active=True
+  table.save()
+  return HttpResponse(str(table.active).lower())
+
+def table_deactivate(request, table_id):
+  table = get_object_or_404(Table,pk=table_id)
+  table.active=False
+  table.save()
+  return HttpResponse(str(table.active).lower())
