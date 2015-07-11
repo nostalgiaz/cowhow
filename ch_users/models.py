@@ -29,3 +29,10 @@ class User(AbstractUser):
             return self.braintree_customer_id
         else:
             raise ValueError
+
+    def get_credit_cards(self):
+        customer = braintree.Customer.find(self.get_braintree_customer_id())
+
+        credit_cards = customer.credit_cards
+
+        return sorted(credit_cards, key=lambda x: x.updated_at, reverse=True)
