@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from rest_framework import serializers, pagination
 
-from .models import Reservation, Table
+from .models import Reservation, Table, Coworking
 from .paginators import ESPaginator
 
 from core.utils import TimeOverlapException, BraintreeAPIException
@@ -25,6 +25,11 @@ class SingleReservationSerializer(serializers.ModelSerializer):
 
 class ManyReservationsSerializer(SingleReservationSerializer):
     pass
+
+
+class CoworkingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coworking
 
 
 class AddReservationSerializer(serializers.Serializer):

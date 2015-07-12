@@ -17,7 +17,7 @@ from . import utils
 from .helpers import ChHelpers
 from .serializers import (
     SingleReservationSerializer, ManyReservationsSerializer, AddReservationSerializer,
-    PagedCoworkingSerializer, ESCoworkingSerializer
+    PagedCoworkingSerializer, ESCoworkingSerializer, CoworkingSerializer
 )
 
 
@@ -61,6 +61,12 @@ class CoworkingsViewSet(viewsets.ViewSet):
         data.is_valid()
 
         return serializer.get_paginated_response(data.data)
+
+    def retrieve(self, request, pk=None):
+        reservation = get_object_or_404(Coworking, pk=pk)
+        serializer = CoworkingSerializer(reservation)
+
+        return Response(serializer.data)
 
 
 class ReservationViewSet(viewsets.ViewSet):
