@@ -21,6 +21,9 @@ class CoworkingPhoto(TimeStampedModel):
 class Amenity(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
 
 class Coworking(TimeStampedModel):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL)

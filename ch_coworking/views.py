@@ -52,7 +52,8 @@ class CoworkingsViewSet(viewsets.ViewSet):
                     'lon': d
                 }
             })
-
+        import json
+        print(json.dumps(s.to_dict()))
         serializer = PagedCoworkingSerializer(s, request, 100)
         data = ESCoworkingSerializer(data=serializer.page, many=True)
 

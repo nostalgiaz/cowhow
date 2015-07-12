@@ -124,7 +124,7 @@ REST_FRAMEWORK = {
 ELASTICSEARCH = {
     'index': 'cowhow',
     'doc_type': 'coworking',
-    'url': '192.168.59.103:9200',
+    'url': 'localhost:9200',
     'auth': None,
     'verify_certs': False,
     'use_sniff': False,
