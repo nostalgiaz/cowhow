@@ -72,7 +72,9 @@ class ReservationViewSet(viewsets.ViewSet):
         serializer = AddReservationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        serializer.save(owner=request.user)
+        obj = serializer.save(owner=request.user)
+
+        serializer = SingleReservationSerializer(obj)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
