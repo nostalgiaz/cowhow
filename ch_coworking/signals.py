@@ -19,21 +19,21 @@ def coworking_post_save(sender, instance, **kwargs):
         )
     except:
         pass
-
-    try:
-        client.index(
-            index=settings.ELASTICSEARCH['index'],
-            doc_type=settings.ELASTICSEARCH['doc_type'],
-            id=instance.pk,
-            body={
-                'name': instance.name,
-                'location': {
-                    'lat': instance.lat,
-                    'lon': instance.lng
-                },
-                'amenities': [a.name for a in instance.amenities.all()],
-                'photos': [a.photo.url for a in instance.photos.all()],
-            }
-        )
-    except:
-        pass
+    client.index(
+        index=settings.ELASTICSEARCH['index'],
+        doc_type=settings.ELASTICSEARCH['doc_type'],
+        id=instance.pk,
+        body={
+            'name': instance.name,
+            'location': {
+                'lat': instance.lat,
+                'lon': instance.lng
+            },
+            'amenities': [a.name for a in instance.amenities.all()],
+            'photos': [a.photo.url for a in instance.photos.all()],
+            'tables': [{
+                'name': t.name,
+                'price': t.price,
+            } for t in instance.tables.all()]
+        }
+    )

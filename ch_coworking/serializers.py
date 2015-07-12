@@ -19,7 +19,8 @@ class SingleReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
         fields = [
-            'pk', 'date', 'from_hour', 'to_hour', 'lat', 'lng', 'host_name']
+            'pk', 'date', 'from_hour', 'to_hour', 'lat', 'lng', 'host_name',
+        ]
 
 
 class ManyReservationsSerializer(SingleReservationSerializer):
@@ -99,9 +100,21 @@ class ESPhotosField(serializers.ReadOnlyField):
     def to_representation(self, obj):
         return list(obj)
 
+
 class ESAmenitiesField(serializers.ReadOnlyField):
     def to_representation(self, obj):
+        print obj
+
         return list(obj)
+
+
+class ESTablesField(serializers.ReadOnlyField):
+    def to_representation(self, obj):
+        print obj
+        return [{
+            'price': o.price,
+            'name': o.name,
+        }for o in obj]
 
 
 class ESCoworkingSerializer(serializers.Serializer):
@@ -109,6 +122,7 @@ class ESCoworkingSerializer(serializers.Serializer):
     name = serializers.ReadOnlyField()
     amenities = ESAmenitiesField()
     photos = ESPhotosField()
+    tables = ESTablesField()
 
 
 class PagedCoworkingSerializer(pagination.PageNumberPagination):
