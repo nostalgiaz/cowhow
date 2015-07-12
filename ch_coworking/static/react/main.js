@@ -9,12 +9,14 @@ var Main = React.createClass({
     return <div className="content" style={{paddingTop: 0, paddingBottom: 0, paddingRight: 0}}>
       <div className="row">
         <div className="col-md-6">
+          <DatePicker />
+          <TimePicker />
           <Checkboxes filters={this.state.datum.filters.amenities} />
           <hr/>
           <Coworkings coworkings={this.state.datum.coworkings} />
         </div>
         <div className="col-md-6">
-          <Map {...this.props} />
+          <Map {...this.props} coworkings={this.state.datum.coworkings} />
         </div>
       </div>
     </div>;

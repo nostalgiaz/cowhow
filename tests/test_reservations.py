@@ -6,6 +6,8 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+import mock
+
 from . import factories
 
 
@@ -14,7 +16,7 @@ class TestApiReservationCreation(APITestCase):
         url = reverse('reservation-list')
         response = self.client.post(url, {}, format='json')
 
-        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_fails_if_table_is_not_available(self):
         user = factories.UserFactory()
@@ -35,13 +37,16 @@ class TestApiReservationCreation(APITestCase):
             'date': timezone.now().date(),
             'from_hour': '10:00',
             'to_hour': '15:00',
+            'payment_token': 'fake-valid-token'
         }, format='json')
 
         assert response.status_code == status.HTTP_409_CONFLICT
 
-    def test_fails_does_not_fail_on_same_day(self):
+    @mock.patch('braintree.Transaction.sale')
+    def test_fails_does_not_fail_on_same_day(self, m):
         user = factories.UserFactory()
-        table = factories.TableFactory()
+        owner = factories.UserFactory(braintree_merchant_id='fake_id')
+        table = factories.TableFactory(coworking__owner=owner)
 
         factories.ReservationFactory(
             table=table,
@@ -49,6 +54,9 @@ class TestApiReservationCreation(APITestCase):
             from_hour=time(10, 00),
             to_hour=time(12, 00),
         )
+
+        m.return_value.is_success = True
+        m.return_value.transaction.id = '123'
 
         self.client.force_authenticate(user=user)
 
@@ -58,13 +66,19 @@ class TestApiReservationCreation(APITestCase):
             'date': timezone.now().date(),
             'from_hour': '13:00',
             'to_hour': '15:00',
+            'payment_token': 'fake-valid-token',
         }, format='json')
 
         assert response.status_code == status.HTTP_201_CREATED
 
-    def test_add(self):
+    @mock.patch('braintree.Transaction.sale')
+    def test_add(self, m):
         user = factories.UserFactory()
-        table = factories.TableFactory()
+        owner = factories.UserFactory(braintree_merchant_id='fake_id')
+        table = factories.TableFactory(coworking__owner=owner)
+
+        m.return_value.is_success = True
+        m.return_value.transaction.id = '123'
 
         self.client.force_authenticate(user=user)
 
@@ -74,6 +88,7 @@ class TestApiReservationCreation(APITestCase):
             'date': timezone.now().date(),
             'from_hour': '10:00',
             'to_hour': '15:00',
+            'payment_token': 'fake-valid-token',
         }, format='json')
 
         assert response.status_code == status.HTTP_201_CREATED

@@ -14,6 +14,18 @@ var Store = Reflux.createStore({
     this.updateFilters();
   },
 
+  onDate: function (event) {
+
+  },
+
+  onTime: function (event) {
+
+  },
+
+  onMap: function (event) {
+console.log(event)
+  },
+
   updateFilters: function () {
     var that = this;
     $.ajax('/api/coworkings/', {
@@ -39,7 +51,8 @@ var Store = Reflux.createStore({
           {label: 'ethernet', checked: false},
           {label: 'meetingRoom', checked: false},
           {label: 'battleAxe', checked: false}
-        ]
+        ],
+        top_left: ''
       },
       coworkings: []
     };

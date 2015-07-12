@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 # Quick-start development settings - unsuitable for production
@@ -123,8 +123,17 @@ REST_FRAMEWORK = {
 ELASTICSEARCH = {
     'index': 'cowhow',
     'doc_type': 'coworking',
-    'url': 'localhost:9200',
+    'url': '192.168.59.103:9200',
     'auth': None,
     'verify_certs': False,
     'use_sniff': False,
 }
+
+
+# Hey this is an hackathon, we will store these config inside env variables.
+
+BRAINTREE_SANDBOX = True
+BRAINTREE_MERCHANT_ID = 'zz4fbbm4fgn2czdh'
+BRAINTREE_MERCHANT_FRIENDLY_ID = 'rollstudio'
+BRAINTREE_PUBLIC_KEY = 'fvxz3chrcgc5c68j'
+BRAINTREE_PRIVATE_KEY = '3237c38a0ccad2169024047d3366ce5c'

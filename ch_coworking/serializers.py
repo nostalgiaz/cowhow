@@ -1,22 +1,25 @@
+import braintree
+
+from datetime import datetime, date
+from decimal import Decimal
+
 from rest_framework import serializers, pagination
-from rest_framework import status
-from rest_framework.exceptions import APIException
 
 from .models import Reservation, Table
 from .paginators import ESPaginator
 
-
-class TimeOverlapException(APIException):
-    status_code = status.HTTP_409_CONFLICT
+from core.utils import TimeOverlapException, BraintreeAPIException
 
 
 class SingleReservationSerializer(serializers.ModelSerializer):
     lng = serializers.FloatField(source='table.coworking.lng')
     lat = serializers.FloatField(source='table.coworking.lat')
+    host_name = serializers.CharField(source='table.coworking.name')
 
     class Meta:
         model = Reservation
-        fields = ['pk', 'date', 'from_hour', 'to_hour', 'lat', 'lng']
+        fields = [
+            'pk', 'date', 'from_hour', 'to_hour', 'lat', 'lng', 'host_name']
 
 
 class ManyReservationsSerializer(SingleReservationSerializer):
@@ -28,6 +31,7 @@ class AddReservationSerializer(serializers.Serializer):
     from_hour = serializers.TimeField()
     to_hour = serializers.TimeField()
     date = serializers.DateField()
+    payment_token = serializers.CharField()
 
     def validate(self, data):
         a = data['from_hour']
@@ -52,6 +56,34 @@ class AddReservationSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
+        table = validated_data['table']
+
+        assert table.coworking.owner.braintree_merchant_id
+
+        from_time = datetime.combine(date.today(), validated_data['from_hour'])
+        to_time = datetime.combine(date.today(), validated_data['to_hour'])
+
+        hours = (to_time - from_time).seconds / 3600
+
+        amount = table.price * Decimal(hours)
+
+        result = braintree.Transaction.sale({
+            'amount': amount,
+            'merchant_account_id': table.coworking.owner.braintree_merchant_id,
+            'payment_method_token': validated_data.pop('payment_token'),
+            'service_fee_amount': '0.1',
+            'options': {
+                'submit_for_settlement': True
+            }
+        })
+
+        if not result.is_success:
+            errors = [x.message for x in result.errors.deep_errors]
+
+            raise BraintreeAPIException(errors)
+
+        validated_data['transaction_id'] = result.transaction.id
+
         return Reservation.objects.create(**validated_data)
 
 
@@ -63,9 +95,15 @@ class ESLocationField(serializers.ReadOnlyField):
         }
 
 
+class ESPhotosField(serializers.ReadOnlyField):
+    def to_representation(self, obj):
+        return list(obj)
+
+
 class ESCoworkingSerializer(serializers.Serializer):
     location = ESLocationField()
     name = serializers.ReadOnlyField()
+    photos = ESPhotosField()
 
 
 class PagedCoworkingSerializer(pagination.PageNumberPagination):
