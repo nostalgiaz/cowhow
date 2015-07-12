@@ -58,6 +58,8 @@ class AddReservationSerializer(serializers.Serializer):
     def create(self, validated_data):
         table = validated_data['table']
 
+        assert table.coworking.owner.braintree_merchant_id
+
         from_time = datetime.combine(date.today(), validated_data['from_hour'])
         to_time = datetime.combine(date.today(), validated_data['to_hour'])
 
@@ -67,6 +69,7 @@ class AddReservationSerializer(serializers.Serializer):
 
         result = braintree.Transaction.sale({
             'amount': amount,
+            'merchant_account_id': table.coworking.owner.braintree_merchant_id,
             'payment_method_token': validated_data.pop('payment_token'),
             'options': {
                 'submit_for_settlement': True
