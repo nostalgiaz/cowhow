@@ -36,7 +36,6 @@ INSTALLED_APPS = (
 
     'flat',
     'rest_framework',
-    'settings_context_processor',
 
     'django.contrib.admin',
     'django.contrib.auth',
