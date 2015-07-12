@@ -95,9 +95,15 @@ class ESLocationField(serializers.ReadOnlyField):
         }
 
 
+class ESPhotosField(serializers.ReadOnlyField):
+    def to_representation(self, obj):
+        return list(obj)
+
+
 class ESCoworkingSerializer(serializers.Serializer):
     location = ESLocationField()
     name = serializers.ReadOnlyField()
+    photos = ESPhotosField()
 
 
 class PagedCoworkingSerializer(pagination.PageNumberPagination):
