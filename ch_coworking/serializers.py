@@ -103,18 +103,15 @@ class ESPhotosField(serializers.ReadOnlyField):
 
 class ESAmenitiesField(serializers.ReadOnlyField):
     def to_representation(self, obj):
-        print obj
-
         return list(obj)
 
 
 class ESTablesField(serializers.ReadOnlyField):
     def to_representation(self, obj):
-        print obj
         return [{
             'price': o.price,
             'name': o.name,
-        }for o in obj]
+        } for o in obj]
 
 
 class ESCoworkingSerializer(serializers.Serializer):
