@@ -13,6 +13,7 @@ from elasticsearch_dsl import Search
 
 from ch_coworking.models import Reservation, Table, Coworking
 
+from . import utils
 from .helpers import ChHelpers
 from .serializers import (
     SingleReservationSerializer, ManyReservationsSerializer, AddReservationSerializer,
@@ -74,6 +75,8 @@ class ReservationViewSet(viewsets.ViewSet):
         obj = serializer.save(owner=request.user)
 
         serializer = SingleReservationSerializer(obj)
+
+        utils.turn_lights_on()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
