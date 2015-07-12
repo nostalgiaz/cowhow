@@ -111,6 +111,7 @@ class ESTablesField(serializers.ReadOnlyField):
         return [{
             'price': o.price,
             'name': o.name,
+            'pk': o.pk
         } for o in obj]
 
 

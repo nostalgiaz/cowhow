@@ -5,6 +5,21 @@ var Store = Reflux.createStore({
     this.updateFilters();
   },
 
+  onPay: function (table) {
+    $.post('/api/me/credit-cards/', {'nonce': 'fake-valid-nonce'}, function (data) {
+      var token = data.token;
+      $.post('/api/reservations/', {
+        'table': table,
+        'date': new Date().toISOString().slice(0,10),
+        'from_hour': '13:00',
+        'to_hour': '15:00',
+        'payment_token': token
+      }, function () {
+        alert('Yay! The table is yours!')
+      })
+    })
+  },
+
   onCheckbox: function (event) {
     this.datum.filters.amenities = _.map(this.datum.filters.amenities, function (amenity) {
       if (event.filter === amenity.label)

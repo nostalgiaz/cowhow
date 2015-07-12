@@ -3,5 +3,6 @@ var Action = Reflux.createActions([
   'checkbox',
   'time',
   'date',
-  'map'
+  'map',
+  'pay'
 ]);

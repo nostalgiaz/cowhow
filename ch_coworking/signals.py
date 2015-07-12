@@ -34,6 +34,7 @@ def coworking_post_save(sender, instance, **kwargs):
             'tables': [{
                 'name': t.name,
                 'price': t.price,
+                'pk': t.pk,
             } for t in instance.tables.all()]
         }
     )
