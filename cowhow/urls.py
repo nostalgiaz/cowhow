@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.views.generic import TemplateView
 from django.views.generic import ListView
 
 from ch_coworking.models import Table

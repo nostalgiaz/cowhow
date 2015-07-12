@@ -2,7 +2,7 @@ var TimePicker = React.createClass({
   componentDidMount: function () {
     $(".timepicker").timepicker({
       showInputs: false
-    })
+    });
     //.on('changeTime.timepicker', function (e) {
     //console.log('The time is ' + e.time.value);
     //console.log('The hour is ' + e.time.hour);
