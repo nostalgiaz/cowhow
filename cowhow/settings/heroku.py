@@ -22,3 +22,12 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+ELASTICSEARCH = {
+    'index': 'cowhow',
+    'doc_type': 'coworking',
+    'url': os.environ.get('SEARCHBOX_SSL_URL'),
+    'auth': None,
+    'verify_certs': False,
+    'use_sniff': False,
+}
