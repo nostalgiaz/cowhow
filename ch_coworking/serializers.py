@@ -4,6 +4,7 @@ from datetime import datetime, date
 from decimal import Decimal
 
 from rest_framework import serializers, pagination
+from rest_framework.exceptions import ValidationError
 
 from .models import Reservation, Table, Coworking
 from .paginators import ESPaginator
@@ -37,9 +38,13 @@ class AddReservationSerializer(serializers.Serializer):
     from_hour = serializers.TimeField()
     to_hour = serializers.TimeField()
     date = serializers.DateField()
-    payment_token = serializers.CharField()
+    payment_token = serializers.CharField(required=False)
+    payment_nonce = serializers.CharField(required=False)
 
     def validate(self, data):
+        if not data.get('payment_nonce', False) and not data.get('payment_token', False):
+            raise ValidationError('You must provide at least a token or a nonce')
+
         a = data['from_hour']
         b = data['to_hour']
 
@@ -73,15 +78,21 @@ class AddReservationSerializer(serializers.Serializer):
 
         amount = table.price * Decimal(hours)
 
-        result = braintree.Transaction.sale({
+        data = {
             'amount': amount,
             'merchant_account_id': table.coworking.owner.braintree_merchant_id,
-            'payment_method_token': validated_data.pop('payment_token'),
             'service_fee_amount': '0.1',
             'options': {
                 'submit_for_settlement': True
             }
-        })
+        }
+
+        if validated_data.get('payment_token', ''):
+            data['payment_method_token'] = validated_data.pop('payment_token')
+        else:
+            data['payment_method_nonce'] = validated_data.pop('payment_nonce')
+
+        result = braintree.Transaction.sale(data)
 
         if not result.is_success:
             errors = [x.message for x in result.errors.deep_errors]
