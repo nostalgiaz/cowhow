@@ -95,34 +95,41 @@ index = login_required(CowhowIndexView.as_view())
 
 
 class CowhowTablesView(ListView):
-  template_name = "admin/tables.html"
+    template_name = "admin/tables.html"
 
-  def get_queryset(self):
-      return Table.objects.filter(coworking__owner=self.request.user)
+    def get_queryset(self):
+        return Table.objects.filter(coworking__owner=self.request.user)
 
-  def get_context_data(self, **kwargs):
-      context = super(CowhowTablesView, self).get_context_data(**kwargs)
-      context['coworking'] = Coworking.objects.filter(owner=self.request.user)[0]
-      context['tables_active'] = context['coworking'].tables.filter(active=True).count()
-      return context
+    def get_context_data(self, **kwargs):
+        context = super(CowhowTablesView, self).get_context_data(**kwargs)
+        context['coworking'] = Coworking.objects.filter(owner=self.request.user)[0]
+        context['tables_active'] = context['coworking'].tables.filter(active=True).count()
+        return context
 
 tables = login_required(CowhowTablesView.as_view())
 
+
 def table_activate(request, table_id):
-  table = get_object_or_404(Table,pk=table_id)
-  table.active=True
-  table.save()
-  return HttpResponse(str(table.active).lower())
+    table = get_object_or_404(Table, pk=table_id)
+    table.active = True
+    table.save()
+
+    return HttpResponse(str(table.active).lower())
+
 
 def table_deactivate(request, table_id):
-  table = get_object_or_404(Table,pk=table_id)
-  table.active=False
-  table.save()
-  return HttpResponse(str(table.active).lower())
+    table = get_object_or_404(Table, pk=table_id)
+    table.active = False
+    table.save()
+
+    return HttpResponse(str(table.active).lower())
+
 
 def table_price(request, table_id):
-  table = get_object_or_404(Table,pk=table_id)
-  if 'val' in request.GET:
-    table.price=request.GET['val']
-    table.save()
-  return HttpResponse(table.price)
+    table = get_object_or_404(Table, pk=table_id)
+
+    if 'val' in request.GET:
+        table.price = request.GET['val']
+        table.save()
+
+    return HttpResponse(table.price)
