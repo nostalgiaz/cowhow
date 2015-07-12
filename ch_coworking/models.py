@@ -4,6 +4,20 @@ from django.db import models
 from model_utils.models import TimeStampedModel
 
 
+class CoworkingPhoto(TimeStampedModel):
+    title = models.CharField('Title', max_length=100, blank=True)
+    caption = models.TextField('Caption', blank=True)
+
+    cover = models.BooleanField('Cover', default=False)
+
+    photo = models.ImageField('Photo', upload_to='coworkings')
+
+    class Meta:
+        ordering = ['-cover']
+        verbose_name = 'Coworking photo'
+        verbose_name_plural = 'Coworking photos'
+
+
 class Amenity(models.Model):
     name = models.CharField(max_length=255)
 
@@ -16,6 +30,7 @@ class Coworking(TimeStampedModel):
     opening = models.TimeField()
     closing = models.TimeField()
     amenities = models.ManyToManyField(Amenity, blank=True)
+    photos = models.ManyToManyField(CoworkingPhoto, blank=True)
 
     def __unicode__(self):
         return self.name
