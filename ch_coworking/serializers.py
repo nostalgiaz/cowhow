@@ -121,6 +121,7 @@ class ESCoworkingSerializer(serializers.Serializer):
     amenities = ESAmenitiesField()
     photos = ESPhotosField()
     tables = ESTablesField()
+    id = serializers.ReadOnlyField(source='meta.id')
 
 
 class PagedCoworkingSerializer(pagination.PageNumberPagination):
