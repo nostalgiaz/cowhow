@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 # Quick-start development settings - unsuitable for production
@@ -123,7 +123,7 @@ REST_FRAMEWORK = {
 ELASTICSEARCH = {
     'index': 'cowhow',
     'doc_type': 'coworking',
-    'url': 'localhost:9200',
+    'url': '192.168.59.103:9200',
     'auth': None,
     'verify_certs': False,
     'use_sniff': False,
