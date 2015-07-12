@@ -45,7 +45,8 @@ class TestApiReservationCreation(APITestCase):
     @mock.patch('braintree.Transaction.sale')
     def test_fails_does_not_fail_on_same_day(self, m):
         user = factories.UserFactory()
-        table = factories.TableFactory()
+        owner = factories.UserFactory(braintree_merchant_id='fake_id')
+        table = factories.TableFactory(coworking__owner=owner)
 
         factories.ReservationFactory(
             table=table,
@@ -73,7 +74,8 @@ class TestApiReservationCreation(APITestCase):
     @mock.patch('braintree.Transaction.sale')
     def test_add(self, m):
         user = factories.UserFactory()
-        table = factories.TableFactory()
+        owner = factories.UserFactory(braintree_merchant_id='fake_id')
+        table = factories.TableFactory(coworking__owner=owner)
 
         m.return_value.is_success = True
         m.return_value.transaction.id = '123'
