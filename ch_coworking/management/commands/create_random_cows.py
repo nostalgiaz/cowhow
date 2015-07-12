@@ -82,7 +82,7 @@ class Command(NoArgsCommand):
 
             for x in range(3):
                 Table.objects.create(
-                    name='Table {}'.format(x),
+                    name='Table {} for {}'.format(x, place),
                     coworking=cow,
                     price=10.00
                 )
