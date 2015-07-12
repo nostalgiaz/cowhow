@@ -30,7 +30,9 @@ class MeView(generics.RetrieveUpdateDestroyAPIView):
 
 class TokenView(APIView):
     def get(self, request):
-        return Response(braintree.ClientToken.generate())
+        return Response({
+            'token': braintree.ClientToken.generate()
+        })
 
 
 class MerchantViewSet(viewsets.ViewSet):
