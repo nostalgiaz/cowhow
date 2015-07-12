@@ -26,7 +26,7 @@ STATICFILES_DIRS = (
 ELASTICSEARCH = {
     'index': 'cowhow',
     'doc_type': 'coworking',
-    'url': os.environ.get('SEARCHBOX_URL'),
+    'url': os.environ.get('SEARCHBOX_SSL_URL'),
     'auth': None,
     'verify_certs': False,
     'use_sniff': False,
