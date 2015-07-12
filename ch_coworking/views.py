@@ -52,7 +52,6 @@ class CoworkingsViewSet(viewsets.ViewSet):
                     'lon': d
                 }
             })
-
         serializer = PagedCoworkingSerializer(s, request, 100)
         data = ESCoworkingSerializer(data=serializer.page, many=True)
 

@@ -23,7 +23,10 @@ var Store = Reflux.createStore({
   },
 
   onMap: function (event) {
-console.log(event)
+    console.log(event)
+    this.datum.filters.top_left = event._northEast.lat + ',' + event._southWest.lng;
+    this.datum.filters.bottom_right = event._southWest.lat + ',' + event._northEast.lng;
+    this.updateFilters();
   },
 
   updateFilters: function () {
@@ -34,7 +37,9 @@ console.log(event)
           return filter.checked;
         }), function (filter) {
           return filter.label;
-        })
+        }),
+        top_left: this.datum.filters.top_left,
+        bottom_right: this.datum.filters.bottom_right
       },
       'type': 'GET'
     }).done(function (data) {
@@ -51,7 +56,8 @@ console.log(event)
           {id: 'students', label: 'students', checked: false},
           {id: 'axe', label: 'battle axe', checked: false}
         ],
-        top_left: ''
+        top_left: '',
+        bottom_right: ''
       },
       coworkings: []
     };
