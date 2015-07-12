@@ -47,10 +47,9 @@ console.log(event)
     this.datum = {
       filters: {
         amenities: [
-          {label: 'caffe', checked: false},
-          {label: 'ethernet', checked: false},
-          {label: 'meetingRoom', checked: false},
-          {label: 'battleAxe', checked: false}
+          {id: 'coffee', label: 'coffee', checked: false},
+          {id: 'students', label: 'students', checked: false},
+          {id: 'axe', label: 'battle axe', checked: false}
         ],
         top_left: ''
       },

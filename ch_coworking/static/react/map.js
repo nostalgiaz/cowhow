@@ -36,7 +36,8 @@ var Map = React.createClass({
   componentWillReceiveProps: function (props) {
     var that = this;
     _.each(props.coworkings, function (coworking) {
-      L.marker([50.5, 30.5]).addTo(that.map);
+      console.log(coworking)
+      L.marker([coworking.location.latitude, coworking.location.longitude]).addTo(that.map);
     });
 
 

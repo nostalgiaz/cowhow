@@ -99,10 +99,15 @@ class ESPhotosField(serializers.ReadOnlyField):
     def to_representation(self, obj):
         return list(obj)
 
+class ESAmenitiesField(serializers.ReadOnlyField):
+    def to_representation(self, obj):
+        return list(obj)
+
 
 class ESCoworkingSerializer(serializers.Serializer):
     location = ESLocationField()
     name = serializers.ReadOnlyField()
+    amenities = ESAmenitiesField()
     photos = ESPhotosField()
 
 
