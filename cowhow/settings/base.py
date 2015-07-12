@@ -137,3 +137,22 @@ BRAINTREE_MERCHANT_ID = 'zz4fbbm4fgn2czdh'
 BRAINTREE_MERCHANT_FRIENDLY_ID = 'rollstudio'
 BRAINTREE_PUBLIC_KEY = 'fvxz3chrcgc5c68j'
 BRAINTREE_PRIVATE_KEY = '3237c38a0ccad2169024047d3366ce5c'
+
+
+import os
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+        },
+    },
+}
