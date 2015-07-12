@@ -71,6 +71,7 @@ class AddReservationSerializer(serializers.Serializer):
             'amount': amount,
             'merchant_account_id': table.coworking.owner.braintree_merchant_id,
             'payment_method_token': validated_data.pop('payment_token'),
+            'service_fee_amount': '0.1',
             'options': {
                 'submit_for_settlement': True
             }
