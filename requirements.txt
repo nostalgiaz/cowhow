@@ -10,3 +10,4 @@ braintree==3.16.0
 mock==1.1.2
 Pillow==2.9.0
 geopy==1.10.0
+whitenoise==2.0.2
