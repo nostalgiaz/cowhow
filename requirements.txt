@@ -13,3 +13,4 @@ geopy==1.10.0
 whitenoise==2.0.2
 gunicorn==19.3.0
 dj-database-url==0.3.0
+psycopg2==2.6.1
