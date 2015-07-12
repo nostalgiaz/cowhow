@@ -5,4 +5,12 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <!-- Main Activity Theme. -->
+    <style name="MainActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="TransparentActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
 </resources>

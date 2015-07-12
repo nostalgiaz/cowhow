@@ -9,8 +9,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import me.vincentdefeo.cowhow.async.SimpleAsync;
 import me.vincentdefeo.cowhow.rest.Reservation;
 import me.vincentdefeo.cowhow.utils.Maps;
+import me.vincentdefeo.cowhow.utils.REST;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -31,22 +33,35 @@ public class DetailActivity extends AppCompatActivity {
         dateTV = (TextView) findViewById(R.id.date);
         hourTv = (TextView) findViewById(R.id.hour);
 
-        res = (Reservation) getIntent().getExtras().getSerializable(EXTRA);
 
-        addressTv.setText(Maps.getAddressFromCoords(this, res.lat, res.lng));
-        dateTV.setText(res.date);
-        hourTv.setText(res.fromHour);
+        new SimpleAsync()
+        {
 
-        Maps.getMapImage(this, res.lat, res.lng, mapImage);
+            @Override
+            protected void run() {
+                res = REST.getReservationFromPk(getApplication(), getIntent().getStringExtra(EXTRA));
+            }
 
-        mapImage.setOnClickListener(openMapOnClick);
-        addressTv.setOnClickListener(openMapOnClick);
+            @Override
+            protected void then() {
+                addressTv.setText(Maps.getAddressFromCoords(DetailActivity.this, res.lat, res.lng));
+                dateTV.setText(res.date);
+                hourTv.setText(res.fromHour);
+
+                Maps.getMapImage(DetailActivity.this, res.lat, res.lng, mapImage);
+
+                mapImage.setOnClickListener(openMapOnClick);
+                addressTv.setOnClickListener(openMapOnClick);
+
+                getSupportActionBar().setTitle(res.hostName);
+            }
+        }.execute();
     }
 
     private View.OnClickListener openMapOnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String geoUri = "http://maps.google.com/maps?q=loc:" + res.lat + "," + res.lng + " (" + addressTv.getText() + ")";
+            String geoUri = "http://maps.google.com/maps?q=loc:" + res.lat + "," + res.lng + "&zoom=15&size=400x800&sensor=false";
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(geoUri));
             startActivity(intent);
         }

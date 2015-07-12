@@ -25,18 +25,23 @@ android {
     }
 }
 
-dependencies {
-//    compile fileTree(include: ['*.jar'], dir: 'libs')
-//    compile files('libs/pusher-java-client-0.3.3-jar-with-dependencies.jar')
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
 
+dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:design:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.android.support:cardview-v7:22.2.0'
-//    compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
 
-    compile 'com.pusher:pusher-java-client:0.3.3'
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.google.android.gms:play-services:7.5.0'
 
+    compile 'org.uribeacon:uribeacon-library-release@aar'
+    compile 'com.pusher:pusher-java-client:0.3.3'
 }
