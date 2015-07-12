@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     braintree_customer_id = models.CharField(max_length=255, blank=True)
+    braintree_merchant_id = models.CharField(max_length=255, blank=True)
 
     def get_braintree_customer_id(self):
         """

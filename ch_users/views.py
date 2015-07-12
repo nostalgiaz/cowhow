@@ -6,7 +6,9 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from .serializers import UserSerializer, CreditCardSerializer, AddCreditCardSerializer
+from .serializers import (
+    UserSerializer, CreditCardSerializer, AddCreditCardSerializer, MerchantAccountSerializer
+)
 
 
 class UserProfile(DetailView):
@@ -20,6 +22,21 @@ class MeView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class MerchantViewSet(viewsets.ViewSet):
+    # def list(self, request):
+    #     pass
+
+    def create(self, request):
+        user = request.user
+
+        serializer = MerchantAccountSerializer(data=request.DATA)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=user)
+
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class MeCreditCardsViewSet(viewsets.ViewSet):

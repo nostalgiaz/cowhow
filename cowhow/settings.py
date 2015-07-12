@@ -133,6 +133,7 @@ ELASTICSEARCH = {
 # Hey this is an hackathon, we will store these config inside env variables.
 
 BRAINTREE_SANDBOX = True
-BRAINTREE_MERCHANT_ID = '428z5nyhfgrd4cjk'
-BRAINTREE_PUBLIC_KEY = 's393rs6dhpq446y2'
-BRAINTREE_PRIVATE_KEY = '61da2cd47a4ba3a6812624bd25f7b2de'
+BRAINTREE_MERCHANT_ID = 'zz4fbbm4fgn2czdh'
+BRAINTREE_MERCHANT_FRIENDLY_ID = 'rollstudio'
+BRAINTREE_PUBLIC_KEY = 'fvxz3chrcgc5c68j'
+BRAINTREE_PRIVATE_KEY = '3237c38a0ccad2169024047d3366ce5c'
