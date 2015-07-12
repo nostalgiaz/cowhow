@@ -1,10 +1,9 @@
 var DatePicker = React.createClass({
   componentDidMount: function () {
-    $(this.getDOMNode()).datepicker({
+    $(this.getDOMNode()).find('input').datepicker({
        autoclose: true,
       todayHighlight: true
     }).on('changeDate', function (e) {
-      console.log(e)
       Action.date(e)
     });
   },
@@ -14,7 +13,10 @@ var DatePicker = React.createClass({
   },
 
   render: function () {
-    return <input type="text" type="text" className="form-control"/>;
+    return <div>
+      <strong>Date:</strong><br/>
+      <input type="text" type="text" className="form-control"/>
+    </div>;
   }
 });
 

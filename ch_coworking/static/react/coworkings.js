@@ -3,10 +3,20 @@ var Coworkings = React.createClass({
     if (_.isEmpty(this.props.coworkings))
       return false;
 
-    return <ul>
+    return <div>
       {_.map(this.props.coworkings, function (coworking) {
-        return <li>{coworking.name} -- {coworking.location.latitude} / {coworking.location.longitude}</li>;
+        console.log(coworking)
+        return <div className="box box-success" style={{borderTopColor: '#E6A4FA'}}>
+          <div className="box-header ui-sortable-handle">
+            <h3 className="box-title">{coworking.name}</h3>
+          </div>
+            <div className="box-body chat">
+              <img src={'/static/imgs/coffee.png'} alt="" width="30" style={{marginRight: '5px', opacity: 'coffee' in coworking.amenities ? 1 : 0.5 }} />
+              <img src={'/static/imgs/students.png'} alt="" width="30" style={{marginRight: '5px', opacity: 'students' in coworking.amenities ? 1 : 0.5 }} />
+              <img src={'/static/imgs/axe.png'} alt="" width="30" style={{marginRight: '5px', opacity: 'axe' in coworking.amenities ? 1 : 0.5 }} />
+            </div>
+          </div>;
       })}
-    </ul>;
+    </div>;
   }
 });
