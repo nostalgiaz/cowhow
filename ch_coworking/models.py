@@ -16,8 +16,10 @@ class Coworking(TimeStampedModel):
     opening = models.TimeField()
     closing = models.TimeField()
     amenities = models.ManyToManyField(Amenity, blank=True)
+
     def __unicode__(self):
         return self.name
+
 
 class Table(TimeStampedModel):
     name = models.CharField(max_length=255)
@@ -25,8 +27,10 @@ class Table(TimeStampedModel):
     coworking = models.ForeignKey(Coworking, related_name='tables')
     price = models.DecimalField(decimal_places=2, max_digits=5)
     notes = models.TextField()
+
     def __unicode__(self):
         return self.name
+
 
 class Reservation(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -34,3 +38,4 @@ class Reservation(models.Model):
     date = models.DateField()
     from_hour = models.TimeField()
     to_hour = models.TimeField()
+    transaction_id = models.CharField(max_length=255)

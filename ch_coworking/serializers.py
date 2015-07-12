@@ -1,13 +1,14 @@
+import braintree
+
+from datetime import datetime, date
+from decimal import Decimal
+
 from rest_framework import serializers, pagination
-from rest_framework import status
-from rest_framework.exceptions import APIException
 
 from .models import Reservation, Table
 from .paginators import ESPaginator
 
-
-class TimeOverlapException(APIException):
-    status_code = status.HTTP_409_CONFLICT
+from core.utils import TimeOverlapException, BraintreeAPIException
 
 
 class SingleReservationSerializer(serializers.ModelSerializer):
@@ -30,6 +31,7 @@ class AddReservationSerializer(serializers.Serializer):
     from_hour = serializers.TimeField()
     to_hour = serializers.TimeField()
     date = serializers.DateField()
+    payment_token = serializers.CharField()
 
     def validate(self, data):
         a = data['from_hour']
@@ -54,6 +56,30 @@ class AddReservationSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
+        table = validated_data['table']
+
+        from_time = datetime.combine(date.today(), validated_data['from_hour'])
+        to_time = datetime.combine(date.today(), validated_data['to_hour'])
+
+        hours = (to_time - from_time).seconds / 3600
+
+        amount = table.price * Decimal(hours)
+
+        result = braintree.Transaction.sale({
+            'amount': amount,
+            'payment_method_token': validated_data.pop('payment_token'),
+            'options': {
+                'submit_for_settlement': True
+            }
+        })
+
+        if not result.is_success:
+            errors = [x.message for x in result.errors.deep_errors]
+
+            raise BraintreeAPIException(errors)
+
+        validated_data['transaction_id'] = result.transaction.id
+
         return Reservation.objects.create(**validated_data)
 
 
