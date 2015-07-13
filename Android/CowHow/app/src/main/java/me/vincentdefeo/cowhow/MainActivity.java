@@ -1,78 +1,65 @@
 package me.vincentdefeo.cowhow;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
-import com.pusher.client.Pusher;
-
-import java.util.List;
-
-import me.vincentdefeo.cowhow.async.SimpleAsync;
-import me.vincentdefeo.cowhow.rest.CowHowService;
-import me.vincentdefeo.cowhow.rest.Reservation;
-import me.vincentdefeo.cowhow.utils.Maps;
+import com.google.android.gms.maps.SupportMapFragment;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    // private Fragment[] fragments = {new SearchFragment(), new ReservationsFragment() };
+    private Fragment[] fragments = {new CoworkSearchFragment(), new ReservationsFragment() };
 
-    private FrameLayout fragmentContainer;
     private String actionBarTitle = "";
 
-    private RecyclerView list;
     private Toolbar toolbar;
 
+    private TabLayout tabs;
+    private ViewPager pager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //fragmentContainer = (FrameLayout) findViewById(R.id.fragment_container);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        tabs = (TabLayout) findViewById(R.id.tabs);
 
-        //toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
-        list = (RecyclerView) findViewById(R.id.reservations_list);
-        list.setLayoutManager(new LinearLayoutManager(this));
+        pager = (ViewPager) findViewById(R.id.fragment_pager);
+        setSupportActionBar(toolbar);
 
-        new SimpleAsync()
-        {
-            List<Reservation> reservations = null;
+        pager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
+        tabs.setupWithViewPager(pager);
 
-            @Override
-            protected void run()
-            {
-                CowHowService chs = ((CowHowApplication) getApplication()).getRestService();
-                reservations = chs.getReservations();
-            }
+        tabs.getTabAt(0).setIcon(R.drawable.ic_map_grey600_24dp);
+        tabs.getTabAt(1).setIcon(R.drawable.ic_briefcase_grey600_24dp);
+    }
 
-            @Override
-            protected void then()
-            {
-                list.setAdapter(new ReservationsAdapter(reservations));
-            }
+    private class MainPagerAdapter extends FragmentPagerAdapter {
 
-        }.execute();
+        public MainPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
-        findViewById(R.id.puser_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, PusherTest.class));
-            }
-        });
+        @Override
+        public int getCount() {
+            return fragments.length;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragments[position];
+        }
     }
 
     @Override
@@ -90,79 +77,20 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_filters) {
             return true;
         }
 
+        if (id == R.id.action_location) {
+            ((CoworkSearchFragment)fragments[0]).updatePosition();
+
+            return true;
+        }
+/*
+        if (id == R.id.action_search) {
+            return true;
+        }
+*/
         return super.onOptionsItemSelected(item);
-    }
-
-    private class ReservationViewHolder extends RecyclerView.ViewHolder
-    {
-        View root;
-
-        TextView position;
-        TextView date;
-        TextView hour;
-
-        public ReservationViewHolder(View itemView) {
-            super(itemView);
-            root = itemView;
-
-            position = (TextView) itemView.findViewById(R.id.location);
-            date = (TextView) itemView.findViewById(R.id.date);
-            hour = (TextView) itemView.findViewById(R.id.hour);
-        }
-    }
-
-    private class ReservationsAdapter extends RecyclerView.Adapter<ReservationViewHolder>
-    {
-        private final List<Reservation> reservations;
-
-        ReservationsAdapter(List<Reservation> reservations)
-        {
-            this.reservations = reservations;
-        }
-
-        @Override
-        public ReservationViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-        {
-            View v = LayoutInflater.from(MainActivity.this)
-                        .inflate(R.layout.reservation_list_item, parent, false);
-
-            return new ReservationViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(ReservationViewHolder holder, int position)
-        {
-            final Reservation current = reservations.get(position);
-
-
-
-            holder.date.setText(current.date);
-            holder.date.setText(current.date);
-            holder.hour.setText(current.fromHour);
-            holder.position.setText(Maps.getAddressFromCoords(MainActivity.this, current.lat, current.lng));
-
-            holder.root.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(MainActivity.this, DetailActivity.class);
-
-                    Bundle b = new Bundle();
-                    b.putSerializable(DetailActivity.EXTRA, current);
-                    i.putExtras(b);
-
-                    startActivity(i);
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount()
-        {
-            return reservations.size();
-        }
     }
 }

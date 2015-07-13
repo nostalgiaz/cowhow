@@ -21,6 +21,9 @@ class CoworkingPhoto(TimeStampedModel):
 class Amenity(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
 
 class Coworking(TimeStampedModel):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -41,7 +44,7 @@ class Table(TimeStampedModel):
     active = models.BooleanField(default=True)
     coworking = models.ForeignKey(Coworking, related_name='tables')
     price = models.DecimalField(decimal_places=2, max_digits=5)
-    notes = models.TextField()
+    notes = models.TextField(blank=True)
 
     def __unicode__(self):
         return self.name

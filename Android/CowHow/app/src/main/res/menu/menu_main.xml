@@ -5,11 +5,14 @@
     <item
         android:id="@+id/action_filters"
         android:title="Filters"
+        android:icon="@drawable/ic_filter_outline_grey600_24dp"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_location"
         android:title="My Location"
+        android:icon="@drawable/ic_map_marker_grey600_24dp"
         android:orderInCategory="100"
         app:showAsAction="always" />
+
 </menu>

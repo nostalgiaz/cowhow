@@ -16,4 +16,5 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_pusher_test">PusherTest</string>
+    <string name="title_activity_coworking_detail">CoworkingDetail</string>
 </resources>

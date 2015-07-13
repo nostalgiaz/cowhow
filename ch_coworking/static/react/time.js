@@ -17,11 +17,14 @@ var TimePicker = React.createClass({
   },
 
   render: function () {
-    return <div className="input-append bootstrap-timepicker">
-      <div className="input-group">
-        <input type="text" className="form-control timepicker"/>
-        <div className="input-group-addon">
-          <i className="fa fa-clock-o"></i>
+    return <div>
+      <strong>Hour:</strong><br/>
+      <div className="input-append bootstrap-timepicker">
+        <div className="input-group">
+          <input type="text" className="form-control timepicker"/>
+          <div className="input-group-addon">
+            <i className="fa fa-clock-o"></i>
+          </div>
         </div>
       </div>
     </div>;

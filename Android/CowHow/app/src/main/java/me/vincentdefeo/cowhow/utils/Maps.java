@@ -29,7 +29,7 @@ public class Maps {
 
     public static void getMapImage(Context c, double lat, double lng, ImageView imageView)
     {
-        String url = "http://maps.google.com/maps/api/staticmap?center=" + lat + "," + lng + "&zoom=15&size=200x200&sensor=false";
+        String url = "https://maps.googleapis.com/maps/api/staticmap?center=" + lat + "," + lng + "zoom=13&size=600x400&maptype=roadmap&markers=color:red%7C"+ lat + "," + lng;
         Picasso.with(c).load(url).into(imageView);
     }
 }

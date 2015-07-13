@@ -4,7 +4,7 @@ var Map = React.createClass({
 
     L.mapbox.accessToken = this.props.accessToken;
     this.map = L.mapbox.map('map', 'mapbox.streets', {
-      maxZoom: 15
+      maxZoom: 13
     });
     this.map.locate();
 
@@ -36,7 +36,7 @@ var Map = React.createClass({
   componentWillReceiveProps: function (props) {
     var that = this;
     _.each(props.coworkings, function (coworking) {
-      L.marker([50.5, 30.5]).addTo(that.map);
+      L.marker([coworking.location.latitude, coworking.location.longitude]).addTo(that.map);
     });
 
 

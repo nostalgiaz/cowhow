@@ -20,6 +20,10 @@ public class Reservation implements Serializable {
 
     @SerializedName("to_hour")
     public String toHour;
+
+    @SerializedName("host_name")
+    public  String hostName;
+
     @Expose
     public String pk;
     @Expose
